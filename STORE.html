@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>7ARRAGA — Store</title>
+  <meta name="description" content="7ARRAGA — Official streetwear store" />
+  <style>
+    :root{--bg:#0f0f10;--card:#111;--muted:#bdbdbd;--accent:#e63946;--white:#fff}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial;color:var(--white);background:linear-gradient(180deg,#070607 0%,#0f0f10 100%)}
+    header{display:flex;align-items:center;gap:18px;padding:18px 28px;border-bottom:1px solid rgba(255,255,255,.04)}
+    .logo{height:56px}
+    .brand{font-weight:800;letter-spacing:1px}
+    nav{margin-left:auto;display:flex;gap:10px;align-items:center}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,.08);padding:8px 12px;border-radius:8px;color:var(--white);cursor:pointer}
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:30px;padding:40px;align-items:center}
+    .hero-left p{color:var(--muted);margin:0 0 18px;font-size:2rem;animation:blast 2s infinite alternate}
+    .shop-actions{display:flex;gap:12px}
+    .card{background:var(--card);padding:18px;border-radius:14px;box-shadow:0 6px 30px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.03)}
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;padding:28px}
+    .product{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);padding:14px;border-radius:10px}
+    .product img{width:100%;height:220px;object-fit:cover;border-radius:8px}
+    .title{font-weight:700;margin:10px 0 6px}
+    .price{color:var(--accent);font-weight:700}
+    .controls{display:flex;gap:8px;margin-top:10px}
+    .add{flex:1;background:var(--accent);color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer}
+    .cart{position:fixed;right:18px;bottom:18px;background:linear-gradient(180deg,#121212,#0b0b0b);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.04);width:340px}
+    .cart h3{margin:0 0 8px}
+    .cart-list{max-height:260px;overflow:auto}
+    .cart-row{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.02)}
+    .cart-row img{width:56px;height:56px;object-fit:cover;border-radius:6px}
+    .cart-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+    footer{padding:22px;text-align:center;color:var(--muted);font-size:14px}
+    /* Blast Animation */
+    @keyframes blast {
+      0% { transform: scale(1); text-shadow: 0 0 0 var(--accent); }
+      100% { transform: scale(1.05); text-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent); }
+    }
+    /* Responsive */
+    @media (max-width:880px){.hero{grid-template-columns:1fr;padding:18px}.hero-right{display:none}.cart{width:92%} .hero-left p{font-size:1.5rem}}
+  </style>
+</head>
+<body>
+  <header>
+    <!-- the logo uses the uploaded file path provided in the conversation -->
+    <img class="logo" src="https://lh3.googleusercontent.com/geougc-cs/AMBA38vX0Owg-YoxgOF4ZG-2fPScxgJHQSTwTdPXtyo4nebDEpo_iLYNBuQ1iDAl6jVOZeCIPyfldfKPEdWDVAxh7ct0LeJhqIv-sqXuyjqbxt1Da4c8rtxFADSvf9CYz9FpntQpADMt9b1i29Q=w269-h269-p" alt="7ARRAGA logo" />
+    <div class="brand">7ARRAGA</div>
+    <nav>
+      <button class="btn" onclick="scrollToProducts()">الموديلات</button>
+      <button class="btn" onclick="openContact()">اتصل بينا</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-left">
+        <p>7ARRAGA جاءت للنهوض و ليس للهروب</p>
+        <div class="shop-actions">
+          <button class="btn" onclick="scrollToProducts()">تشوف الموديلات</button>
+          <a class="btn" href="#" onclick="downloadLogo()">حمّل اللوغو (PNG)</a>
+        </div>
+      </div>
+      <div class="hero-right card">
+        <h3>Quick preview</h3>
+        <img src="/mnt/data/photo_2025-11-25_20-05-58.jpg" alt="logo preview" style="width:100%;border-radius:8px;margin-top:12px;object-fit:contain"/>
+        <p style="color:var(--muted);font-size:14px;margin-top:12px;">و الموكاب.</p>
+      </div>
+    </section>
+
+    <section id="products" style="padding:6px 18px!important">
+      <div class="product-grid" id="grid"></div>
+    </section>
+  </main>
+
+  <!-- Cart (hidden when empty) -->
+  <aside class="cart card" id="cart">
+    <h3>السلة (<span id="count">0</span>)</h3>
+    <div class="cart-list" id="cart-list"></div>
+    <div class="cart-footer">
+      <div>
+        <div style="color:var(--muted);font-size:13px">المجموع</div>
+        <div style="font-weight:800" id="total">0 MAD</div>
+      </div>
+      <div>
+        <button class="btn" onclick="clearCart()">فرّغ</button>
+        <button class="add" onclick="checkout()">ادفع</button>
+      </div>
+    </div>
+  </aside>
+
+  <footer>
+    © <strong>7ARRAGA</strong> — جميع الحقوق محفوظة. تصميم و mockups جاهزين للطباعة.
+  </footer>
+
+  <script>
+    // Sample product data — replace images with real mockups or product photos
+    const PRODUCTS = [
+      {id:1, title:'T-shirt 7ARRAGA', price:249, img:'https://i.postimg.cc/pXG29QX1/photo-2025-11-25-20-05-58.jpg', sku:'TSH-001'},
+      {id:2, title:'Hoodie 7ARRAGA', price:499, img:'https://i.postimg.cc/pXG29QX1/photo-2025-11-25-20-05-58.jpg', sku:'HOD-001'},
+      {id:3, title:'Cap 7ARRAGA', price:129, img:'https://i.postimg.cc/pXG29QX1/photo-2025-11-25-20-05-58.jpg', sku:'CAP-001'},
+      {id:4, title:'Écharpe 7ARRAGA', price:179, img:'https://i.postimg.cc/pXG29QX1/photo-2025-11-25-20-05-58.jpg', sku:'SCA-001'}
+    ];
+
+    const cart = JSON.parse(localStorage.getItem('zarraga_cart')||'[]');
+
+    function formatPrice(n){return n.toLocaleString('en-US') + ' MAD'}
+
+    function renderProducts(){
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      PRODUCTS.forEach(p=>{
+        const div = document.createElement('div'); div.className='product card';
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.title}"/>
+          <div class="title">${p.title}</div>
+          <div class="price">${formatPrice(p.price)}</div>
+          <div class="controls">
+            <select id="size-${p.id}">
+              <option>Size: S</option>
+              <option>Size: M</option>
+              <option>Size: L</option>
+              <option>Size: XL</option>
+            </select>
+            <button class="add" onclick="addToCart(${p.id})">أضف للسلة</button>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function addToCart(id){
+      const product = PRODUCTS.find(p=>p.id===id);
+      const size = document.getElementById('size-'+id).value;
+      const item = {...product, qty:1, size};
+      const exists = cart.find(c=>c.sku===item.sku && c.size===size);
+      if(exists){ exists.qty += 1; }
+      else cart.push(item);
+      saveCart(); renderCart();
+      alert('تمت الإضافة للسلة');
+    }
+
+    function saveCart(){ localStorage.setItem('zarraga_cart', JSON.stringify(cart)); }
+
+    function renderCart(){
+      const list = document.getElementById('cart-list'); list.innerHTML='';
+      let total = 0; let count=0;
+      cart.forEach((c,idx)=>{
+        total += c.price * c.qty; count += c.qty;
+        const row = document.createElement('div'); row.className='cart-row';
+        row.innerHTML = `
+          <img src="${c.img}" alt="${c.title}"/>
+          <div style="flex:1">
+            <div style="font-weight:700">${c.title}</div>
+            <div style="color:var(--muted);font-size:13px">${c.size} · ${formatPrice(c.price)}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="margin-bottom:6px">x${c.qty}</div>
+            <div style="display:flex;gap:6px;justify-content:flex-end">
+              <button class="btn" onclick="dec(${idx})">-</button>
+              <button class="btn" onclick="inc(${idx})">+</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+      document.getElementById('total').innerText = formatPrice(total);
+      document.getElementById('count').innerText = count;
+      document.getElementById('cart').style.display = count? 'block':'none';
+    }
+
+    function inc(i){ cart[i].qty++; saveCart(); renderCart(); }
+    function dec(i){ cart[i].qty--; if(cart[i].qty<=0) cart.splice(i,1); saveCart(); renderCart(); }
+    function clearCart(){ if(confirm('بغيت تفرّغ السلة؟')){ cart.length=0; saveCart(); renderCart(); }}
+    function checkout(){ if(!cart.length){ alert('السلة خاوية'); return };
+      // Simple simulated checkout flow
+      const name = prompt('اسم الزبون'); if(!name) return;
+      alert('شكرا '+name+'! طلبك تسجّل (محاكاة). تواصل معنا باش نكمّلو الطلب.');
+      cart.length=0; saveCart(); renderCart();
+    }
+
+    function scrollToProducts(){ document.getElementById('products').scrollIntoView({behavior:'smooth'}); }
+    function openContact(){ const mail = 'contact@7arraga.store'; window.location = 'mailto:'+mail; }
+    function downloadLogo(){ window.open('/mnt/data/photo_2025-11-25_20-05-58.jpg','_blank'); }
+
+    // init
+    renderProducts(); renderCart();
+  </script>
+</body>
+</html>
